@@ -1,0 +1,84 @@
+import core
+import math
+import matrix
+
+// brain.brn - Versao Customizavel
+
+def safe_sigmoid(x) do
+    if x < -6.0 then return 0.001 end
+    if x > 6.0 then return 0.999 end
+    return 1.0 / (1.0 + exp(0.0 - x))
+end
+
+def derivative(x) -> x * (1.0 - x)
+
+// Novo neuronio agora recebe os dados de treino
+def new_neuron(dx1, dx2, dtargets) do
+    return #{
+        w1: 0.5,
+        w2: -0.5,
+        bias: 0.2,
+        lr: 0.1,
+        epochs: 0,
+        last_error: 0.0,
+        x1_data: dx1,
+        x2_data: dx2,
+        target_data: dtargets
+    }#
+end
+
+def predict(neuron, x1, x2) do
+    w1 = neuron["w1"]
+    w2 = neuron["w2"]
+    b = neuron["bias"]
+    soma = (x1 * w1) + (x2 * w2) + b
+    return safe_sigmoid(soma)
+end
+
+def train(neuron, epochs_to_run) do
+    // Puxa os dados customizados de dentro do neuronio
+    dx1 = neuron["x1_data"]
+    dx2 = neuron["x2_data"]
+    targets = neuron["target_data"]
+    
+    w1 = neuron["w1"]
+    w2 = neuron["w2"]
+    b = neuron["bias"]
+    lr = neuron["lr"]
+    total_epochs = neuron["epochs"]
+    current_error = 0.0
+    
+    e = 0
+    for e < epochs_to_run do
+        i = 0
+        for i < 4 do
+            x1 = dx1[i]
+            x2 = dx2[i]
+            target = targets[i]
+            
+            soma = (x1 * w1) + (x2 * w2) + b
+            pred = safe_sigmoid(soma)
+            
+            error = target - pred
+            current_error = error
+            
+            adj = error * derivative(pred) * lr
+            
+            w1 = w1 + (adj * x1)
+            w2 = w2 + (adj * x2)
+            b = b + adj
+            
+            i = i + 1
+        end
+        e = e + 1
+        total_epochs = total_epochs + 1
+    end
+    
+    neuron["w1"] = w1
+    neuron["w2"] = w2
+    neuron["bias"] = b
+    neuron["epochs"] = total_epochs
+    neuron["last_error"] = current_error
+    
+    return neuron
+end

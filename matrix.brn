@@ -1,0 +1,89 @@
+import core
+
+// matrix.brn - Versao Blindada (C-Style)
+def zeros(rows, cols) do
+    mat = []
+    r = 0
+    for r < rows do
+        row = []
+        c = 0
+        for c < cols do
+            row = row <> [0.0]
+            c = c + 1
+        end
+        mat = mat <> [row]
+        r = r + 1
+    end
+    return mat
+end
+
+def transpose(mat) do
+    rows = length(mat)
+    if rows == 0 then return [] end
+    cols = length(mat[0])
+    if cols == 0 then return [] end
+
+    new_mat = []
+    j = 0
+    for j < cols do
+        new_row = []
+        i = 0
+        for i < rows do
+            row = mat[i]
+            val = row[j]
+            new_row = new_row <> [val]
+            i = i + 1
+        end
+        new_mat = new_mat <> [new_row]
+        j = j + 1
+    end
+    return new_mat
+end
+
+def mat_mul(a, b) do
+    rows_a = length(a)
+    cols_a = length(a[0])
+    rows_b = length(b)
+    cols_b = length(b[0])
+
+    if cols_a != rows_b then
+        print("Erro: Dimensoes incompativeis")
+        return []
+    end
+
+    result = []
+    i = 0
+    for i < rows_a do
+        new_row = []
+        j = 0
+        for j < cols_b do
+            sum_val = 0.0
+            k = 0
+            for k < cols_a do
+                row_a = a[i]
+                val_a = row_a[k]
+                row_b = b[k]
+                val_b = row_b[j]
+                sum_val = sum_val + (val_a * val_b)
+                k = k + 1
+            end
+            new_row = new_row <> [sum_val]
+            j = j + 1
+        end
+        result = result <> [new_row]
+        i = i + 1
+    end
+    return result
+end
+
+def mat_print(mat) do
+    print("[")
+    rows = length(mat)
+    i = 0
+    for i < rows do
+        row = mat[i]
+        print(row)
+        i = i + 1
+    end
+    print("]")
+end
